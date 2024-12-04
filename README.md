@@ -141,7 +141,34 @@ Out of these, I plan to explore the following question:
 
 ### Interesting Aggregates
 
+Here is one table:
 
+| CLIMATE.REGION     |   OUTAGE_DURATION_MEAN |   CUSTOMERS_AFFECTED_MEAN |   DEMAND_LOSS_MW_MEAN |
+|:-------------------|-----------------------:|--------------------------:|----------------------:|
+| Central            |               2882.21  |                  144424   |               595.682 |
+| East North Central |               5391.4   |                  149816   |               633.902 |
+| Northeast          |               3330.52  |                  177848   |              1013.4   |
+| Northwest          |               1536.36  |                  136768   |               336.036 |
+| South              |               2872.45  |                  212031   |               475.686 |
+| Southeast          |               2247.66  |                  202705   |               865.318 |
+| Southwest          |               1621.41  |                   66121.1 |               903.25  |
+| West               |               1636.31  |                  217946   |               711.566 |
+| West North Central |                796.071 |                   66242.4 |               251.333 |
+
+Here is another table:
+
+| NERC.REGION   |   OUTAGE_DURATION_MEAN |   CUSTOMERS_AFFECTED_MEAN |   DEMAND_LOSS_MW_MEAN |
+|:--------------|-----------------------:|--------------------------:|----------------------:|
+| ECAR          |                5603.31 |                    260624 |              1394.48  |
+| FRCC          |                4271.12 |                    385068 |              1108     |
+| FRCC, SERC    |                 372    |                       nan |               nan     |
+| MRO           |                3001.81 |                    107524 |               281.429 |
+| NPCC          |                3578.65 |                    164358 |              1695.22  |
+| RFC           |                3767.79 |                    157057 |               429.434 |
+| SERC          |                1765.29 |                    117203 |               608.125 |
+| SPP           |                2783.57 |                    231177 |               192.118 |
+| TRE           |                2988.24 |                    253805 |               739.093 |
+| WECC          |                1578.27 |                    182706 |               664.74  |
 
 ## Framing a Prediction Problem
 
