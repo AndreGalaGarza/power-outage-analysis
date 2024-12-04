@@ -67,8 +67,6 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-#### Histogram of Duration of Outages (discard)
-
 ### Bivariate Analysis
 
 #### Line Plot of Average Outage Duration Over Time
@@ -141,9 +139,31 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-#### Choropleth of Number of Affected Customers by State (discard)
-
 ### Interesting Aggregates
+| CLIMATE.REGION     |   OUTAGE_DURATION_MEAN |   CUSTOMERS_AFFECTED_MEAN |   DEMAND_LOSS_MW_MEAN |
+|:-------------------|-----------------------:|--------------------------:|----------------------:|
+| Central            |               2882.21  |                  144424   |               595.682 |
+| East North Central |               5391.4   |                  149816   |               633.902 |
+| Northeast          |               3330.52  |                  177848   |              1013.4   |
+| Northwest          |               1536.36  |                  136768   |               336.036 |
+| South              |               2872.45  |                  212031   |               475.686 |
+| Southeast          |               2247.66  |                  202705   |               865.318 |
+| Southwest          |               1621.41  |                   66121.1 |               903.25  |
+| West               |               1636.31  |                  217946   |               711.566 |
+| West North Central |                796.071 |                   66242.4 |               251.333 |
+
+| NERC.REGION   |   OUTAGE_DURATION_MEAN |   CUSTOMERS_AFFECTED_MEAN |   DEMAND_LOSS_MW_MEAN |
+|:--------------|-----------------------:|--------------------------:|----------------------:|
+| ECAR          |                5603.31 |                    260624 |              1394.48  |
+| FRCC          |                4271.12 |                    385068 |              1108     |
+| FRCC, SERC    |                 372    |                       nan |               nan     |
+| MRO           |                3001.81 |                    107524 |               281.429 |
+| NPCC          |                3578.65 |                    164358 |              1695.22  |
+| RFC           |                3767.79 |                    157057 |               429.434 |
+| SERC          |                1765.29 |                    117203 |               608.125 |
+| SPP           |                2783.57 |                    231177 |               192.118 |
+| TRE           |                2988.24 |                    253805 |               739.093 |
+| WECC          |                1578.27 |                    182706 |               664.74  |
 
 ## Step 3: Framing a Prediction Problem
 
@@ -157,13 +177,13 @@ Regional economic and land-use characteristics from the original dataset, such a
 
 For my regression model, I will use the performance metric of root mean squared error (RMSE):
 
-$\text{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^n (y_i - \hat{y}_i)^2}$
+![Root mean squared error (RMSE)](assets/rmse.PNG)
 
 I chose this metric because it is similar to the mean squared error (MSE), which penalizes larger errors more than smaller ones due to the squaring term. This makes it a better metric than mean absolute error (MAE), because incorrect predictions can have critical consequences in this case. For example, significantly underestimating a long outage may cause a family in a household with said outage to keep food in their refrigerator only for said food to perish. However, I also wanted to balance the sensitivity to large errors with immediate interpretability. Since RMSE produces a prediction with the same units as the response variable (in this case, the number of hours for which a duration lasts), it is ideal for my model.
 
 I will additionally use the ${R}^2$ metric:
 
-$R^2 = 1 - \frac{\sum_{i=1}^n (y_i - \hat{y}_i)^2}{\sum_{i=1}^n (y_i - \bar{y})^2}$
+![R^2 metric](assets/r_squared.PNG)
 
 This helps compare the predictive power of my baseline model with my final model, which adds more features to use for predictions.
 
