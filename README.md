@@ -182,13 +182,13 @@ Regional economic and land-use characteristics from the original dataset, such a
 
 For my regression model, I will use the performance metric of root mean squared error (RMSE):
 
-![Root mean squared error (`RMSE`)](assets/rmse.`PNG`)
+![Root mean squared error (RMSE)](assets/rmse.PNG)
 
 I chose this metric because it is similar to the mean squared error (MSE), which penalizes larger errors more than smaller ones due to the squaring term. This makes it a better metric than mean absolute error (MAE), because incorrect predictions can have critical consequences in this case. For example, significantly underestimating a long outage may cause a family in a household with said outage to keep food in their refrigerator only for said food to perish. However, I also wanted to balance the sensitivity to large errors with immediate interpretability. Since RMSE produces a prediction with the same units as the response variable (in this case, the number of hours for which a duration lasts), it is ideal for my model.
 
 I will additionally use the ${R}^2$ metric:
 
-![R^2 metric](assets/r_squared.`PNG`)
+![R^2 metric](assets/r_squared.PNG)
 
 This helps compare the predictive power of my baseline model with my final model, which adds more features to use for predictions.
 
@@ -225,10 +225,10 @@ Here is an explanation of why I added the new features to the final model:
 - `TOTAL.CUSTOMERS` (quantitative) reflects the scale of the outage and could relate to the resources allocated for restoration.
 
 GridSearchCV performs an exhaustive search over the specified parameter grid to optimize RandomForestRegressor parameters, such as:
-- n_estimators: Number of trees.
-- max_depth: Maximum depth of the trees.
-- min_samples_split: Minimum samples required to split an internal node.
-- min_samples_leaf: Minimum samples required in a leaf node.
+- `n_estimators`: Number of trees.
+- `max_depth`: Maximum depth of the trees.
+- `min_samples_split`: Minimum samples required to split an internal node.
+- `min_samples_leaf`: Minimum samples required in a leaf node.
 
 <iframe
   src="assets/actual_vs_final_pred.html"
