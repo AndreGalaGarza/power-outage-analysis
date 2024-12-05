@@ -10,7 +10,25 @@ First, I will clean the dataset and conduct exploratory data analysis to obtain 
 
 The data used for this investigation was accessed from [Purdue University’s Laboratory for Advancing Sustainable Critical Infrastructure](https://engineering.purdue.edu/LASCI/research-data/outages). A data dictionary is available at the ScienceDirect article "[Data on major power outage events in the continental U.S.](https://www.sciencedirect.com/science/article/pii/S2352340918307182)", under *Table 1. Variable descriptions*.
 
-(TODO: Include a Markdown table with all the features used in the dataset.)
+These are the features of the data which I will focus on in my investigation:
+
+| Column                | Description                                                                                                                  |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------|
+| `YEAR`               | Indicates the year when the outage event occurred                                                                            |
+| `MONTH`              | Indicates the month when the outage event occurred                                                                           |
+| `POSTAL.CODE`        | Represents the postal code of the U.S. states                                                                                |
+| `NERC.REGION`        | The North American Electric Reliability Corporation (NERC) regions involved in the outage event                              |
+| `CLIMATE.REGION`     | U.S. Climate regions as specified by National Centers for Environmental Information (nine climatically consistent regions)     |
+| `ANOMALY.LEVEL`      | Oceanic El Niño/La Niña (ONI) index referring to cold and warm episodes by season, calculated as a 3-month running mean       |
+| `CLIMATE.CATEGORY`   | Climate episodes corresponding to the years categorized as "Warm", "Cold", or "Normal" based on Oceanic Niño Index (ONI)      |
+| `CAUSE.CATEGORY`     | Categories of all the events causing the major power outages                                                                 |
+| `OUTAGE.DURATION`    | Duration of outage events (in minutes)                                                                                       |
+| `DEMAND.LOSS.MW`     | Amount of peak demand lost during an outage event (in Megawatts)                                                             |
+| `CUSTOMERS.AFFECTED` | Number of customers affected by the power outage event                                                                       |
+| `TOTAL.PRICE`        | Average monthly electricity price in the U.S. state (cents/kilowatt-hour)                                                    |
+| `TOTAL.CUSTOMERS`    | Annual number of total customers served in the U.S. state                                                                    |
+| `OUTAGE.START.DATE`, `OUTAGE.START.TIME` | Day and time of the year when the outage event started, as reported by the corresponding Utility in the region               |
+| `OUTAGE.RESTORATION.DATE`, `OUTAGE.RESTORATION.TIME` | Day and time of the year when power was restored to all customers, as reported by the corresponding Utility in the region    |
 
 ## Data Cleaning and Exploratory Data Analysis
 
@@ -249,6 +267,8 @@ Within my `sklearn` Pipeline, I also create two new features:
 - `max_depth`: Maximum depth of the trees.
 - `min_samples_split`: Minimum samples required to split an internal node.
 - `min_samples_leaf`: Minimum samples required in a leaf node.
+
+(TODO: Describe the modeling algorithm you chose, the hyperparameters that ended up performing the best, and the method you used to select hyperparameters and your overall model.)
 
 The RMSE of the final model evaluated to 6307.16, and its R^2 value is 0.165188. This is an improvement from the baseline model's RMSE and R^2 of 6426.33 and 0.133345, respectively, since RMSE should be minimized and R^2 should be maximized.
 
