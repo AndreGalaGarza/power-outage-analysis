@@ -6,9 +6,9 @@ by Andre Gala-Garza (asgala@umich.edu)
 
 This dataset has major power outage data in the continental U.S. from January 2000 to July 2016.
 
-The data can be found [here](https://engineering.purdue.edu/`LASCI`/research-data/outages).
+The data can be found [here](https://engineering.purdue.edu/LASCI/research-data/outages).
 
-A data dictionary is available at this [article](https://www.sciencedirect.com/science/article/pii/`S2352340918307182`) under *Table 1. Variable descriptions*.
+A data dictionary is available at this [article](https://www.sciencedirect.com/science/article/pii/S2352340918307182) under *Table 1. Variable descriptions*.
 
 ### Questions to Explore
 These are some possible questions to explore regarding this dataset:
@@ -170,6 +170,28 @@ Here is another table:
 | TRE           |                2988.24 |                    253805 |               739.093 |
 | WECC          |                1578.27 |                    182706 |               664.74  |
 
+### Imputations
+
+In the column `TOTAL.PRICE`, which indicates the average monthly electricity price in the U.S. state corresponding to a certain outage, a total of 22 values were missing (`NaN`). I considered these values to be missing completely at random (MCAR), due to the small number of these outages and their varying indices from across the original dataset. Since the distribution of the column appeared relatively normal, I felt that these missing values would be representative of the dataset as a whole. Therefore, I chose to use mean imputation on these values by replacing them with the mean `TOTAL.PRICE` for all outages.
+
+This is what the distribution of `TOTAL.PRICE` looked like before imputation:
+
+<iframe
+  src="assets/total_price_before_imputation.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+As there were only 22 missing values, the appearance of the distribution remained unchanged after imputation:
+
+<iframe
+  src="assets/total_price_after_imputation.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
 ## Framing a Prediction Problem
 
 My prediction problem is to predict the duration of a power outage; therefore, the response variable is `OUTAGE.DURATION`. This is a regression problem, since the model will predict the continuous quantity of how long a power outage lasts. I chose this response variable because when a household has a power outage, having an estimate of the time taken before recovery is crucial for making decisions such as whether to use a backup generator or continue storing perishable food.
@@ -186,7 +208,7 @@ For my regression model, I will use the performance metric of root mean squared 
 
 I chose this metric because it is similar to the mean squared error (MSE), which penalizes larger errors more than smaller ones due to the squaring term. This makes it a better metric than mean absolute error (MAE), because incorrect predictions can have critical consequences in this case. For example, significantly underestimating a long outage may cause a family in a household with said outage to keep food in their refrigerator only for said food to perish. However, I also wanted to balance the sensitivity to large errors with immediate interpretability. Since RMSE produces a prediction with the same units as the response variable (in this case, the number of hours for which a duration lasts), it is ideal for my model.
 
-I will additionally use the ${R}^2$ metric:
+I will additionally use the R^2 metric:
 
 ![R^2 metric](assets/r_squared.PNG)
 
@@ -202,12 +224,14 @@ The features I used in the baseline model are as follows: `MONTH`, `ANOMALY.LEVE
 - `POSTAL.CODE` (nominal) provides geographic specificity that can account for localized infrastructure or response capabilities.
 - `CAUSE.CATEGORY` (nominal) captures high-level reasons for outages, which are directly linked to their expected durations (e.g., equipment failure vs. severe weather).
 
-In this model, the quantiles for numerical features (`MONTH`, `ANOMALY.LEVEL`) are reduced to a number below the number of samples in the dataset. Meanwhile, categorical features (`POSTAL.CODE`, `CAUSE.CATEGORY`) are encoded using OneHotEncoder to convert nominal categories into dummy variables.
+In this model, the quantiles for numerical features (`MONTH`, `ANOMALY.LEVEL`) are reduced to 500, which is ensured to be below the number of samples in the dataset. Meanwhile, categorical features (`POSTAL.CODE`, `CAUSE.CATEGORY`) are encoded using OneHotEncoder to convert nominal categories into dummy variables.
+
+The RMSE of the baseline model is 6426.33, and its R^2 value is 0.133345. Here is a line plot comparing the baseline model's predictions for outage durations and the actual durations:
 
 <iframe
   src="assets/actual_vs_baseline_pred.html"
   width="800"
-  height="600"
+  height="400"
   frameborder="0"
 ></iframe>
 
@@ -224,22 +248,35 @@ Here is an explanation of why I added the new features to the final model:
 - `TOTAL.PRICE` (quantitative) indicates the cost of electricity, which may correlate with infrastructure investment levels or restoration priorities.
 - `TOTAL.CUSTOMERS` (quantitative) reflects the scale of the outage and could relate to the resources allocated for restoration.
 
-GridSearchCV performs an exhaustive search over the specified parameter grid to optimize RandomForestRegressor parameters, such as:
+Within my `sklearn` Pipeline, I also create two new features:
+
+- I use a `Normalizer` to normalize values of `ANOMALY.LEVEL` to the unit norm. This creates a variable that consists of the positive and negative signs associated with the anomaly level of each outage.
+- I use a `Binarizer` that evaluates to 1 if `TOTAL.CUSTOMERS` is 6 million or greater, and 0 otherwise. This separates outages into two groups: one has a relatively normal distribution for `TOTAL.CUSTOMERS`, and the other does not.
+
+`GridSearchCV` performs an exhaustive search over the specified parameter grid to optimize `RandomForestRegressor` parameters, such as:
 - `n_estimators`: Number of trees.
 - `max_depth`: Maximum depth of the trees.
 - `min_samples_split`: Minimum samples required to split an internal node.
 - `min_samples_leaf`: Minimum samples required in a leaf node.
 
+The RMSE of the final model evaluated to 6307.16, and its R^2 value is 0.165188. This is an improvement from the baseline model's RMSE and R^2 of 6426.33 and 0.133345, respectively, since RMSE should be minimized and R^2 should be maximized.
+
+Here is a line plot comparing the final model's predictions for outage durations and the actual durations:
+
 <iframe
   src="assets/actual_vs_final_pred.html"
   width="800"
-  height="600"
+  height="400"
   frameborder="0"
 ></iframe>
+
+This line plot compares both models against each other, along with the actual durations:
 
 <iframe
   src="assets/actual_vs_both_preds.html"
   width="800"
-  height="600"
+  height="400"
   frameborder="0"
 ></iframe>
+
+From the above graph, we can see that the final model's prediction for outage durations (in green) matches the actual durations (in blue) quite closely, when taking into account the large fluctuations made by the outage duration over time. Therefore, we can conclude that the final model will generalize relatively well to unseen data.
