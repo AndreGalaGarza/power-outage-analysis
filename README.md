@@ -1,4 +1,4 @@
-# Power Outage Analysis
+# What Makes Power Outages Last?
 
 by Andre Gala-Garza (asgala@umich.edu)
 
