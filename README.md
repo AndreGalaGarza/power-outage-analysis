@@ -4,39 +4,28 @@ by Andre Gala-Garza (asgala@umich.edu)
 
 ## Introduction
 
-This dataset has major power outage data in the continental U.S. from January 2000 to July 2016.
+Power outages have consistently had negative impacts on the health of communities. Often, the severity of a particular outage is proportional to how long the outage lasts, since this increases the risk of food spoiling and water becoming contaminated. To alleviate these setbacks, a useful solution is to provide an estimate of how long an outage might last for, based on information that is known at the time of the outage. I aim to accomplish this goal during this investigation, where I will analyze a dataset of major power outage data in the continental U.S. from January 2000 to July 2016.
 
-The data can be found [here](https://engineering.purdue.edu/LASCI/research-data/outages).
+First, I will clean the dataset and conduct exploratory data analysis to obtain a basic understanding of the information the dataset provides. Next, I will explore the following motivating research question: **What characteristics lead to power outages with longer durations?** Specifically, I plan to use my exploratory analysis to reveal key relationships between the duration of a power outage and other features of a dataset, then create a model that predicts the duration of a specific outage given features of the outage that are known when it begins. This type of prediction would be essential for households and businesses to make preparations for outages that are proportional to their length, especially in dangerous situations such as hospitals, where the backup power for critical medical devices must be managed carefully.
 
-A data dictionary is available at this [article](https://www.sciencedirect.com/science/article/pii/S2352340918307182) under *Table 1. Variable descriptions*.
+The data used for this investigation was accessed from [Purdue University’s Laboratory for Advancing Sustainable Critical Infrastructure](https://engineering.purdue.edu/LASCI/research-data/outages). A data dictionary is available at the ScienceDirect article "[Data on major power outage events in the continental U.S.](https://www.sciencedirect.com/science/article/pii/S2352340918307182)", under *Table 1. Variable descriptions*.
 
-### Questions to Explore
-These are some possible questions to explore regarding this dataset:
-
-- Where and when do major power outages tend to occur?
-- What are the characteristics of major power outages with higher severity? Variables to consider include location, time, climate, land-use characteristics, electricity consumption patterns, economic characteristics, etc. What risk factors may an energy company want to look into when predicting the location and severity of its next major power outage?
-- What characteristics are associated with each category of cause?
-- How have characteristics of major power outages changed over time? Is there a clear trend?
-
-Out of these, I plan to explore the following question:
-
-**What characteristics lead to power outages with longer durations?**
+(TODO: Include a Markdown table with all the features used in the dataset.)
 
 ## Data Cleaning and Exploratory Data Analysis
 
 ### Data Cleaning
 
-#### Drop unnecessary columns
+The original data was saved as a Microsoft Excel spreadsheet, so I removed the first five rows, which were entirely blank aside from a general description of the data. I also removed the seventh row, which was only used to describe the units of some of the features. The sixth row was used as the header row. I also removed the first column, which was not part of the data itself.
 
-#### Combine date and time columns into Timestamp columns
+There were a total of 1,534 power outage entries in the original dataset, which I loaded into a DataFrame using the Python library pandas. The DataFrame had 56 unique columns (features). In order to clean the data, I performed the following operations on the original DataFrame:
 
-#### Replace 0 with np.nan
-
-#### Impute all NaN values in `TOTAL.PRICE` with the mean
-
-#### Remove all rows where `CLIMATE.REGION` is not applicable
-
-#### Remove all rows where `OUTAGE.DURATION` is not applicable
+- Drop all unnecessary columns, leaving only the columns relevant to my investigation. These columns are: `YEAR`, `MONTH`, `POSTAL.CODE`, `NERC.REGION`, `CLIMATE.REGION`, `ANOMALY.LEVEL`, `CLIMATE.CATEGORY`, `OUTAGE.START.DATE`, `OUTAGE.START.TIME`, `OUTAGE.RESTORATION.DATE`, `OUTAGE.RESTORATION.TIME`, `CAUSE.CATEGORY`, `OUTAGE.DURATION`, `DEMAND.LOSS.MW`, `CUSTOMERS.AFFECTED`, `TOTAL.PRICE`, `TOTAL.CUSTOMERS`.
+- Combine the date and time columns into Timestamp columns: I combined the columns `OUTAGE.START.DATE` and `OUTAGE.START.TIME` into a single column, `OUTAGE.START`, in the format of a precise Timestamp. I did the same with `OUTAGE.RESTORATION.DATE` and `OUTAGE.RESTORATION.TIME`, combining them into `OUTAGE.RESTORATION`.
+- In the columns for the severity metrics, `OUTAGE.DURATION`, `CUSTOMERS.AFFECTED`, and `DEMAND.LOSS.MW`, I replaced any values of 0 with `np.nan`, thus intentionally treating them as missing values. Logically, it is unreasonable for any of these metrics to have been actually measured as actually zero. Instead, zero was likely used as a placeholder for the true value of the variable, which is not present in the dataset.
+- Impute all `NaN` values in `TOTAL.PRICE` with the mean of the column. I describe this in more detail in the "Imputations" section of the investigation.
+- Remove all rows where `CLIMATE.REGION` is not applicable. There were only 6 rows where this was the case, and it was important to my investigation that values were present in this column.
+- Remove all rows where `OUTAGE.DURATION` is not applicable. There were 135 of these rows, which fell into one of two cases: The `OUTAGE.RESTORATION` value was either missing, or it was equivalent to `OUTAGE.START`, making the duration between `OUTAGE.START` and `OUTAGE.RESTORATION` functionally non-existent. For both of these cases, since the focus of my investigation is the `OUTAGE.DURATION` variable, any imputation strategy would skew the outcome, so I felt that it was best to simply remove any entries where this column was missing.
 
 ### Univariate Analysis
 
@@ -88,6 +77,8 @@ I then group the outages by the state in which they occured to produce a choropl
   height="600"
   frameborder="0"
 ></iframe>
+
+This plot reveals that Wisconsin has the highest average outage duration, with New York and West Virginia following behind. Notably, many states with high outage durations on average are in either the Midwest or Northeast region of the United States.
 
 Next, I make several scatter plots that compare outage duration with other variables in the dataset. First, I plot outage duration against two discrete features: the month in which an outage occurred and the major cause of an outage, respectively.
 
