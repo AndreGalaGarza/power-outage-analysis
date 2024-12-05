@@ -257,18 +257,20 @@ Here is an explanation of why I added the new features to the final model:
 - `TOTAL.PRICE` (quantitative) indicates the cost of electricity, which may correlate with infrastructure investment levels or restoration priorities.
 - `TOTAL.CUSTOMERS` (quantitative) reflects the scale of the outage and could relate to the resources allocated for restoration.
 
+The modeling algorithm I chose was `RandomForestRegressor`. This was very useful for my purposes, since the `RandomForestRegressor` can predict a continuous target variable by averaging the outputs of multiple decision trees. It handles both numerical and categorical variables and can perform well even when capturing non-linear relationships or interactions between features. Finally, its averaging mechanism across multiple trees reduces the risk of overfitting compared to individual decision trees.
+
 Within my `sklearn` Pipeline, I also create two new features:
 
 - I use a `Normalizer` to normalize values of `ANOMALY.LEVEL` to the unit norm. This creates a variable that consists of the positive and negative signs associated with the anomaly level of each outage.
 - I use a `Binarizer` that evaluates to 1 if `TOTAL.CUSTOMERS` is 6 million or greater, and 0 otherwise. This separates outages into two groups: one has a relatively normal distribution for `TOTAL.CUSTOMERS`, and the other does not.
 
 `GridSearchCV` performs an exhaustive search over the specified parameter grid to optimize `RandomForestRegressor` parameters, such as:
-- `n_estimators`: Number of trees.
-- `max_depth`: Maximum depth of the trees.
-- `min_samples_split`: Minimum samples required to split an internal node.
-- `min_samples_leaf`: Minimum samples required in a leaf node.
+- `n_estimators`: Number of trees (100 or 200).
+- `max_depth`: Maximum depth of the trees (10, 20, or None).
+- `min_samples_split`: Minimum samples required to split an internal node (2 or 5).
+- `min_samples_leaf`: Minimum samples required in a leaf node. (1 or 2).
 
-(TODO: Describe the modeling algorithm you chose, the hyperparameters that ended up performing the best, and the method you used to select hyperparameters and your overall model.)
+These were the hyperparameters that ended up performing the best: `n_estimators` = 100, `max_depth` = None, `min_samples_split` = 5, `min_samples_leaf` = 2.
 
 The RMSE of the final model evaluated to 6307.16, and its R^2 value is 0.165188. This is an improvement from the baseline model's RMSE and R^2 of 6426.33 and 0.133345, respectively, since RMSE should be minimized and R^2 should be maximized.
 
