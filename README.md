@@ -40,7 +40,7 @@ Out of these, I plan to explore the following question:
 
 ### Univariate Analysis
 
-#### Number of Outages for Each Major Cause
+For my analysis, I begin by exploring some univariate relationships within individual columns of the dataset. First, I plot a bar graph of the number of power outages for each type of major cause of an outage:
 
 <iframe
   src="assets/num_outages_by_major_cause.html"
@@ -49,7 +49,7 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-#### Distribution of Outages by Total Customers
+Next, I plot a histogram of the distribution of outages by the total number of customers that were affected:
 
 <iframe
   src="assets/outages_by_total_customers.html"
@@ -58,7 +58,9 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-####  Distribution of El Niño/La Niña Anomaly Level
+Interestingly, the distribution seems to be somewhat normal until the start of the bin with 6 million total customers, at which point the normality assumption can no longer reasonably hold.
+
+I also plot the distribution of outages by the El Niño/La Niña anomaly level that was reported during the outage:
 
 <iframe
   src="assets/anomaly_level_distribution.html"
@@ -69,7 +71,7 @@ Out of these, I plan to explore the following question:
 
 ### Bivariate Analysis
 
-#### Line Plot of Average Outage Duration Over Time
+I continue with bivariate analyses to compare relationships between two variables. First, I draw a line plot of the average outage duration for each month in the dataset. Red lines correspond to odd-numbered years, while blue lines correspond to even-numbered years.
 
 <iframe
   src="assets/average_outage_duration_over_time.html"
@@ -78,7 +80,7 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-#### Choropleth of Average Power Outage Duration by State
+I then group the outages by the state in which they occured to produce a choropleth of the average outage duration by state:
 
 <iframe
   src="assets/average_outage_duration_by_state.html"
@@ -87,7 +89,7 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-#### Scatter Plot of Outage Duration vs. Month of Outage
+Next, I make several scatter plots that compare outage duration with other variables in the dataset. First, I plot outage duration against two discrete features: the month in which an outage occurred and the major cause of an outage, respectively.
 
 <iframe
   src="assets/outage_duration_by_month.html"
@@ -96,8 +98,6 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-#### Scatter Plot of Outage Duration vs. Major Cause
-
 <iframe
   src="assets/outage_duration_vs_major_cause.html"
   width="800"
@@ -105,7 +105,7 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-#### Scatter Plot of Outage Duration vs. Peak Demand Loss
+Next, I plot outage duration against two continuous features: the amount of peak demand (in Megawatts) lost during an outage and the El Niño/La Niña anomaly Level, respectively.
 
 <iframe
   src="assets/outage_duration_vs_peak_demand_loss.html"
@@ -114,8 +114,6 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-#### Scatter Plot of Outage Duration vs. El Niño/La Niña Anomaly Level
-
 <iframe
   src="assets/outage_duration_vs_anomaly_level.html"
   width="800"
@@ -123,7 +121,7 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-#### Box Plots of Outage Duration vs. Climate Region
+Based on aggregate information from the grouped tables seen below, I was also interested in the relationship between a state's climate region and an outage's duration. The following series of box plots show this relationship, revealing that East North Central and Northeast states seem to have longer outage durations on average, while West North Central states have very low duration outages.
 
 <iframe
   src="assets/outage_duration_by_climate_region.html"
@@ -139,9 +137,9 @@ Out of these, I plan to explore the following question:
   frameborder="0"
 ></iframe>
 
-### Interesting Aggregates
+### Grouping and Aggregates
 
-Here is one table:
+I constructed a table of the outages in the dataset grouped by `CLIMATE.REGION` and performed the aggregate function `mean()`, in order to find the average severity metrics for each region. Here are all of the rows in the grouped table:
 
 | CLIMATE.REGION     |   OUTAGE_DURATION_MEAN |   CUSTOMERS_AFFECTED_MEAN |   DEMAND_LOSS_MW_MEAN |
 |:-------------------|-----------------------:|--------------------------:|----------------------:|
@@ -155,7 +153,7 @@ Here is one table:
 | West               |               1636.31  |                  217946   |               711.566 |
 | West North Central |                796.071 |                   66242.4 |               251.333 |
 
-Here is another table:
+I also followed a similar procedure for the column `NERC.REGION`, to find the average severity metrics for each North American Electric Reliability Corporation (NERC) region. Here are all of the rows in the grouped table:
 
 | NERC.REGION   |   OUTAGE_DURATION_MEAN |   CUSTOMERS_AFFECTED_MEAN |   DEMAND_LOSS_MW_MEAN |
 |:--------------|-----------------------:|--------------------------:|----------------------:|
@@ -183,7 +181,7 @@ This is what the distribution of `TOTAL.PRICE` looked like before imputation:
   frameborder="0"
 ></iframe>
 
-As there were only 22 missing values, the appearance of the distribution remained unchanged after imputation:
+As there were only 22 missing values, the distribution appeared relatively unchanged after imputation:
 
 <iframe
   src="assets/total_price_after_imputation.html"
@@ -231,9 +229,11 @@ The RMSE of the baseline model is 6426.33, and its R^2 value is 0.133345. Here i
 <iframe
   src="assets/actual_vs_baseline_pred.html"
   width="800"
-  height="400"
+  height="420"
   frameborder="0"
 ></iframe>
+
+The line for the baseline model's predictions (in orange) deviates significantly from the actual durations (in blue). Therefore, we can conclude that the baseline model will generalize rather poorly to unseen data.
 
 ## Final Model
 
@@ -266,7 +266,7 @@ Here is a line plot comparing the final model's predictions for outage durations
 <iframe
   src="assets/actual_vs_final_pred.html"
   width="800"
-  height="400"
+  height="420"
   frameborder="0"
 ></iframe>
 
@@ -275,7 +275,7 @@ This line plot compares both models against each other, along with the actual du
 <iframe
   src="assets/actual_vs_both_preds.html"
   width="800"
-  height="400"
+  height="420"
   frameborder="0"
 ></iframe>
 
